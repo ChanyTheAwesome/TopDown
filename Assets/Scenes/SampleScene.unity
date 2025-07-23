@@ -1244,6 +1244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterRenderer: {fileID: 861510184}
   weaponPivot: {fileID: 716918644}
+  WeaponPrefab: {fileID: 2043778757119468869, guid: 4820e568f177d994d938ffc8db1921eb, type: 3}
 --- !u!61 &1500729626
 BoxCollider2D:
   m_ObjectHideFlags: 0
