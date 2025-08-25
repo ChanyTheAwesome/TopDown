@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98862c92d8737434e89f33042fb27b43, type: 3}
   m_Name: Goblin
   m_EditorClassIdentifier: 
-  characterName: 
-  stats: []
+  characterName: Enemy
+  stats:
+  - statType: 0
+    baseValue: 10
+  - statType: 1
+    baseValue: 5

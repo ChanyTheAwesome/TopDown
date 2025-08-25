@@ -9,14 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98862c92d8737434e89f33042fb27b43, type: 3}
-  m_Name: Player
+  m_Script: {fileID: 11500000, guid: 9def289f0a7a5334eb77afebb5ca7dcd, type: 3}
+  m_Name: ProjectileUp
   m_EditorClassIdentifier: 
-  characterName: Player
-  stats:
-  - statType: 0
-    baseValue: 100
-  - statType: 1
-    baseValue: 7
-  - statType: 2
-    baseValue: 3
+  itemName: 
+  statModifiers: []
+  isTemporary: 0
+  duration: 0
