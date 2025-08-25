@@ -2,11 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatHandler : MonoBehaviour//단순히 스탯을 가지고 있다.
+public class StatHandler : MonoBehaviour
 {
-    [Range(1, 100)][SerializeField] private int health = 10;//SerializeField를 통해 인스펙터에서 볼 수 있게 하고, 범위를 설정할 수 있도록 했다. 슬라이더가 생긴다!
-    public int Health { get => health; set => health = Mathf.Clamp(value, 0, 100); }//Clamp는 최소/최대값 안에서만 놀 수 있게 하는 녀석이다.
+    public StatData statData;
+    private Dictionary<StatType, float> currentStats = new Dictionary<StatType, float>();
 
-    [Range(1.0f, 20.0f)][SerializeField] private float speed = 3.0f;
-    public float Speed { get => speed; set => speed = Mathf.Clamp(value, 0, 20); }
+    private void Awake()
+    {
+        InitializeStats();
+    }
+
+    private void InitializeStats()
+    {
+        foreach (StatEntry entry in statData.stats)
+        {
+            currentStats[entry.statType] = entry.baseValue;
+        }
+    }
+
+    public float GetStat(StatType statType)
+    {
+        return currentStats.ContainsKey(statType) ? currentStats[statType] : 0;
+    }
+
+    public void ModifyStat(StatType statType, float amount, bool isPermanent = true, float duration = 0)
+    {
+        if (!currentStats.ContainsKey(statType)) return;
+
+        currentStats[statType] += amount;
+
+        if (!isPermanent)
+        {
+            StartCoroutine(RemoveStatAfterDuration(statType, amount, duration));
+        }
+    }
+
+    private IEnumerator RemoveStatAfterDuration(StatType statType, float amount, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        currentStats[statType] -= amount;
+    }
+
 }

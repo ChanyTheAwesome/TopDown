@@ -71,14 +71,15 @@ public class BaseController : MonoBehaviour
 
     private void Movement(Vector2 direction)
     {
-        direction = direction * statHandler.Speed; // 받아온 direction에 speed만큼 이동, 적은 EnemyController의 handleAction에, Player는 OnMove에 지정되어있음.
-        if(knockbackDuration > 0.0f)
+        direction = direction * statHandler.GetStat(StatType.Speed);
+        if (knockbackDuration > 0.0f)
         {
             direction *= 0.2f;
             direction += knockback;
-        }//넉백 중이라면 넉백을 하도록 함, 이동의 전체 크기를 0.2만큼 낮추고, knockback 벡터를 direction에 더함
-        _rigidbody.velocity = direction; // 물리 연산을 하는 rigidbody의 velocity에 direction을 넣어줌
-        animationhandler.Move(direction); // 이동 애니메이션 키세요 라는 뜻
+        }
+
+        _rigidbody.velocity = direction;
+        animationhandler.Move(direction);
     }
 
     private void Rotate(Vector2 direction)

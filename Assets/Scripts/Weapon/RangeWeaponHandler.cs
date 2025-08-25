@@ -25,26 +25,33 @@ public class RangeWeaponHandler : WeaponHandler
 
     private ProjectileManager projectileManager;
 
+    private StatHandler statHandler;
+
+
     protected override void Start()
     {
         base.Start();
         projectileManager = ProjectileManager.Instance;
+        statHandler = GetComponentInParent<StatHandler>();
     }
+
 
     public override void Attack()
     {
-        base.Attack();//애니메이션 출력하고, 소리를 내는 것이다.
-        float projectileAngleSpace = multipleProjectileAngle;
-        int numberOfProjectilePerShot = NumberofProjectilesPerShot;
-        float minAngle = -(numberOfProjectilePerShot/2.0f) * projectileAngleSpace;//최소 각도를 설정한다.
+        base.Attack();
 
-        for(int i = 0; i<numberOfProjectilePerShot; i++)
+        float projectileAngleSpace = multipleProjectileAngle;
+        int numberOfProjectilePerShot = numberofProjectilesPerShot + (int)statHandler.GetStat(StatType.ProjectileCount); ;
+
+        float minAlge = -(numberOfProjectilePerShot / 2f) * projectileAngleSpace;
+
+        for (int i = 0; i < numberOfProjectilePerShot; i++)
         {
-            float angle = minAngle + projectileAngleSpace * i;//최소 각도에 정해진 각도 간격을 더하고
-            float randomSpread = Random.Range(-spread, spread);//무작위 값을 또 정하고
-            angle += randomSpread;//더해
-            CreateProjectile(Controller.LookDirection, angle);//생성한다.
-        }//이를 투사체 갯수만큼 반복한다.
+            float angle = minAlge + projectileAngleSpace * i;
+            float randomSpread = Random.Range(-spread, spread);
+            angle += randomSpread;
+            CreateProjectile(Controller.LookDirection, angle);
+        }
     }
     private void CreateProjectile(Vector2 _lookDirection, float angle)
     {//총알 발사, projectileManager에게 있는 ShootBullet을 호출한다.

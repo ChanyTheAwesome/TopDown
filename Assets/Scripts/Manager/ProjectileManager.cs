@@ -10,18 +10,27 @@ public class ProjectileManager : MonoBehaviour
     [SerializeField] private GameObject[] projectilePrefabs;
 
     [SerializeField] private ParticleSystem impactParticleSystem;
+
+    ObjectPoolManager objectPoolManager;
+
     private void Awake()
     {
         instance = this;
     }
 
+    private void Start()
+    {
+        objectPoolManager = ObjectPoolManager.Instance;
+    }
+
     public void ShootBullet(RangeWeaponHandler rangeWeaponHandler, Vector2 startPosition, Vector2 direction)
     {
-        GameObject origin = projectilePrefabs[rangeWeaponHandler.BulletIndex];//프리팹에서 선택된 투사체를 선택받고
-        GameObject obj = Instantiate(origin, startPosition, Quaternion.identity);//생성한다.
+        // GameObject origin = projectilePrefabs[rangeWeaponHandler.BulletIndex];
+        // GameObject obj = Instantiate(origin,startPosition,Quaternion.identity);
+        GameObject obj = objectPoolManager.GetObject(rangeWeaponHandler.BulletIndex, startPosition, Quaternion.identity);
 
-        ProjectileController projectileController = obj.GetComponent<ProjectileController>();//총알에 붙은 ProjectileController를 가져와
-        projectileController.Init(direction, rangeWeaponHandler, this);//방향과, 원거리 무기 핸들러와, 매니저를 보내준다.
+        ProjectileController projectileController = obj.GetComponent<ProjectileController>();
+        projectileController.Init(direction, rangeWeaponHandler, this);
     }
 
     public void CreateImpactParticlesAtPosition(Vector3 position, RangeWeaponHandler weaponHandler)

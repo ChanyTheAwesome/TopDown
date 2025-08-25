@@ -13,7 +13,7 @@ public class ResourceController : MonoBehaviour
     private float timeSinceLastChange = float.MaxValue;
 
     public float CurrentHealth { get; private set; }
-    public float Maxhealth => statHandler.Health;
+    public float MaxHealth => statHandler.GetStat(StatType.Health);
 
     public AudioClip damageClip;
 
@@ -28,7 +28,7 @@ public class ResourceController : MonoBehaviour
 
     private void Start()
     {
-        CurrentHealth = statHandler.Health;//체력을 최대로 설정해주고
+        CurrentHealth = statHandler.GetStat(StatType.Health);
     }
     private void Update()
     {
@@ -50,10 +50,10 @@ public class ResourceController : MonoBehaviour
 
         timeSinceLastChange = 0.0f;//지나간 시간을 0초로 설정하고
         CurrentHealth += change;//변화를 준 다음,
-        CurrentHealth = (CurrentHealth > Maxhealth) ? Maxhealth : CurrentHealth;//변화값이 최대체력보다 높은지 체크,
+        CurrentHealth = (CurrentHealth > MaxHealth) ? MaxHealth : CurrentHealth;//변화값이 최대체력보다 높은지 체크,
         CurrentHealth = (CurrentHealth < 0) ? 0: CurrentHealth;//0보다 낮은지 체크한다.
 
-        OnChangeHealth?.Invoke(CurrentHealth, Maxhealth);//OnChangeHealth에 등록된 작동이 있다면 실행한다.
+        OnChangeHealth?.Invoke(CurrentHealth, MaxHealth);//OnChangeHealth에 등록된 작동이 있다면 실행한다.
         if(change < 0)
         {
             animationHandler.Damage();//맞았다는 애니메이션과

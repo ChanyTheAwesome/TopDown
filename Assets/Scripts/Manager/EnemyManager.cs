@@ -7,6 +7,7 @@ public class EnemyManager : MonoBehaviour
     private Coroutine waveRoutine;
 
     [SerializeField] private List<GameObject> enemyPrefabs;
+    private Dictionary<string, GameObject> enemyPrefabDict;
 
     [SerializeField] List<Rect> spawnAreas;
     [SerializeField] private Color gizmoColor = new Color(1, 0, 0, 0.3f);
@@ -21,6 +22,11 @@ public class EnemyManager : MonoBehaviour
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
+        enemyPrefabDict = new Dictionary<string, GameObject>();
+        foreach (GameObject prefab in enemyPrefabs)
+        {
+            enemyPrefabDict[prefab.name] = prefab;
+        }
     }
     public void StartWave(int waveCount)
     {
@@ -53,15 +59,24 @@ public class EnemyManager : MonoBehaviour
         }
         enemySpawnComplete = true;//다 만들었나요? 네.
     }
-    private void SpawnRandomEnemy()
+    private void SpawnRandomEnemy(string prefabName = null)
     {
         if (enemyPrefabs.Count == 0 || spawnAreas.Count == 0)
         {
             Debug.LogWarning("Somethings wrong...");
             return;
         }
+        GameObject randomPrefab;
 
-        GameObject randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];//무작위로 선정된 프리팹을
+        if (prefabName == null)
+        {
+            randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];//무작위로 선정된 프리팹을
+        }
+        else
+        {
+            randomPrefab = enemyPrefabDict[prefabName];
+        }
+
         Rect randomArea = spawnAreas[Random.Range(0, spawnAreas.Count)];//리스트에 들어있는 상자를 무작위로 선정한 다음
 
         Vector2 randomPosition = new Vector2(Random.Range(randomArea.xMin, randomArea.xMax), Random.Range(randomArea.yMin, randomArea.yMax));//그 상자 안에서 또 무작위로 위치를 선정해
@@ -97,5 +112,42 @@ public class EnemyManager : MonoBehaviour
         {
             gameManager.EndOfWave();//웨이브 끝내주세요~ == 다음 웨이브 시작해주세요~
         }
+    }
+
+    public void StartStage(StageInstance stageInstance)
+    {
+        if (waveRoutine != null)
+            StopCoroutine(waveRoutine);
+
+        waveRoutine = StartCoroutine(SpawnStart(stageInstance));
+    }
+
+    private IEnumerator SpawnStart(StageInstance stageInstance)
+    {
+        enemySpawnComplete = false;
+        yield return new WaitForSeconds(timeBetweenWaves);
+
+        WaveData waveData = stageInstance.currentStageInfo.waves[stageInstance.currentWave];
+
+        for (int i = 0; i < waveData.monsters.Length; i++)
+        {
+            yield return new WaitForSeconds(timeBetweenSpawns);
+
+            MonsterSpawnData monsterSpawnData = waveData.monsters[i];
+            for (int j = 0; j < monsterSpawnData.spawnCount; j++)
+            {
+                SpawnRandomEnemy(monsterSpawnData.monsterType);
+            }
+        }
+
+        if (waveData.hasBoss)
+        {
+            yield return new WaitForSeconds(timeBetweenSpawns);
+
+            gameManager.MainCameraShake();
+            SpawnRandomEnemy(waveData.bossType);
+        }
+
+        enemySpawnComplete = true;
     }
 }
