@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9def289f0a7a5334eb77afebb5ca7dcd, type: 3}
   m_Name: ProjectileUp
   m_EditorClassIdentifier: 
-  itemName: 
-  statModifiers: []
+  itemName: ProjectileUp
+  statModifiers:
+  - statType: 2
+    baseValue: 1
   isTemporary: 0
   duration: 0
