@@ -17,7 +17,7 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] private float timeBetweenSpawns = 0.2f;
     [SerializeField] private float timeBetweenWaves = 1.0f;
-
+    [SerializeField] private List<GameObject> itemPrefabs;
     GameManager gameManager;
     public void Init(GameManager gameManager)
     {
@@ -107,13 +107,17 @@ public class EnemyManager : MonoBehaviour
 
     public void RemoveEnemyOnDeath(EnemyController enemy)
     {
-        activeEnemies.Remove(enemy);//적이 죽으면 리스트에서 빼주고
-        if (enemySpawnComplete && activeEnemies.Count == 0)//엥 다죽였네?
-        {
-            gameManager.EndOfWave();//웨이브 끝내주세요~ == 다음 웨이브 시작해주세요~
-        }
-    }
+        activeEnemies.Remove(enemy);
 
+        CreateRandomItem(enemy.transform.position);
+
+        if (enemySpawnComplete && activeEnemies.Count == 0)
+            gameManager.EndOfWave();
+    }
+    public void CreateRandomItem(Vector3 position)
+    {
+        GameObject item = Instantiate(itemPrefabs[Random.Range(0, itemPrefabs.Count)], position, Quaternion.identity);
+    }
     public void StartStage(StageInstance stageInstance)
     {
         if (waveRoutine != null)
